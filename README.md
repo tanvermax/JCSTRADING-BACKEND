@@ -49,3 +49,50 @@ digital-wallet-api/
 ├── package.json
 ├── README.md
 └── tsconfig.json
+
+
+
+# API Endpoints and Access Control
+
+This document outlines all the API endpoints available in the Digital Wallet system and the user roles authorized to access each one.
+
+<hr>
+
+### ➡️ Public Access
+
+These endpoints do not require authentication.
+
+* `POST /api/v1/auth/login` - Authenticates a user and returns a JWT.
+* `POST /api/v1/user/register` - Creates a new user account and a wallet.
+
+---
+
+### ➡️ User Role Access
+
+These endpoints can only be accessed by a user with the `user` role.
+
+* `POST /api/v1/user/sendmoney` - Sends money to another user.
+* `POST /api/v1/user/withdraw` - Withdraws money from the user's wallet.
+* `GET /api/v1/user/history` - Retrieves the user's transaction history.
+
+---
+
+### ➡️ Agent Role Access
+
+These endpoints can only be accessed by a user with the `agent` role.
+
+* `POST /api/v1/agent/addmoney` - Adds money to a user's wallet (cash-in).
+* `GET /api/v1/agent/history` - Retrieves the agent's transaction history.
+
+---
+
+### ➡️ Admin Role Access
+
+These endpoints can only be accessed by a user with the `admin` role.
+
+* `GET /api/v1/admin/alluser` - Retrieves a list of all users.
+* `GET /api/v1/admin/wallets` - Retrieves a list of all wallets in the system.
+* `GET /api/v1/admin/transactions` - Retrieves all system-wide transactions.
+* `GET /api/v1/transaction/history` - Retrieves all system-wide transactions.
+* `PATCH /api/v1/admin/wallet/user/:userId` - Blocks or unblocks a specific user's wallet.
+* `PATCH /api/v1/admin/wallet/agent/:agentId` - Approves or suspends an agent's status.
