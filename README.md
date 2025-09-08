@@ -31,24 +31,7 @@ A secure, modular, and role-based backend API for a digital wallet system, built
 
 The project follows a clean, modular architecture to promote maintainability and separation of concerns.
 
-```plaintext
-digital-wallet-api/
-├── src/
-│   ├── modules/
-│   │   ├── admin/
-│   │   ├── agent/
-│   │   ├── auth/
-│   │   ├── transaction/
-│   │   └── user/
-│   ├── middlewares/
-│   ├── config/
-│   ├── routes/
-│   ├── app.ts
-│   └── server.ts
-├── .gitignore
-├── package.json
-├── README.md
-└── tsconfig.json
+
 
 
 
@@ -96,3 +79,24 @@ These endpoints can only be accessed by a user with the `admin` role.
 * `GET /api/v1/transaction/history` - Retrieves all system-wide transactions.
 * `PATCH /api/v1/admin/wallet/user/:userId` - Blocks or unblocks a specific user's wallet.
 * `PATCH /api/v1/admin/wallet/agent/:agentId` - Approves or suspends an agent's status.
+
+
+```plaintext
+digital-wallet-api/
+├── src/
+│   ├── modules/
+│   │   ├── admin/
+│   │   ├── agent/
+│   │   ├── auth/
+│   │   ├── transaction/
+│   │   └── user/
+│   ├── middlewares/
+│   ├── config/
+│   ├── routes/
+│   ├── app.ts
+│   └── server.ts
+├── .gitignore
+├── package.json
+├── README.md
+└── tsconfig.json
+
