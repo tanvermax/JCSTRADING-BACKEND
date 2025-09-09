@@ -164,8 +164,8 @@ const userwithdrawmoney = catchAsync(async (req: Request, res: Response, next: N
     if (!agentWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Agent wallet not found");
     }
-    if (agentWallet.status === WalletStatus.BLOCKED) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Agent account is blocked. Cannot process withdrawal.");
+    if (agentWallet.status === WalletStatus.SUSPEND) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Agent account is SUSPEND. Cannot process withdrawal.");
     }
 
     const updatedWallet = await withdrawfromWallet(agent, userId, amount);

@@ -27,8 +27,8 @@ const addmoney = catchAsync(async (req: Request, res: Response, next: NextFuncti
     if (!agentWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Agent wallet not found");
     }
-    if (agentWallet.status === WalletStatus.BLOCKED) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Agent's account is blocked. Cannot add money.");
+    if (agentWallet.status === WalletStatus.SUSPEND) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Agent's account is SUSPEND. Cannot add money.");
     }
 
     const userWallet = await Wallet.findOne({ owner: userId });
