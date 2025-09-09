@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdminRouter = void 0;
+const express_1 = require("express");
+const cheakAuth_1 = require("../../middleware/cheakAuth");
+const user_interface_1 = require("../user/user.interface");
+const admin_controller_1 = require("./admin.controller");
+const router = (0, express_1.Router)();
+router.get("/alluser", (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), admin_controller_1.adminController.getAllUser);
+router.get("/wallets", (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), admin_controller_1.adminController.getWallets);
+router.get("/transactions", (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), admin_controller_1.adminController.getTransactions);
+router.patch("/wallet/user/:userId", (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), admin_controller_1.adminController.updateWalletStatus);
+router.patch("/wallet/agent/:agentId", (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), admin_controller_1.adminController.updateagentWallet);
+exports.AdminRouter = router;

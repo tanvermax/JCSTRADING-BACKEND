@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TransactionRoute = void 0;
+const express_1 = require("express");
+const transaction_controller_1 = require("./transaction.controller");
+const cheakAuth_1 = require("../../middleware/cheakAuth");
+const user_interface_1 = require("../user/user.interface");
+const router = (0, express_1.Router)();
+router.get('/history', (0, cheakAuth_1.cheakAuth)(user_interface_1.Role.ADMIN), transaction_controller_1.transactionController.getHistory);
+exports.TransactionRoute = router;
