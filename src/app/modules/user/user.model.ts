@@ -20,8 +20,7 @@ const useSchema = new Schema<IUser>({
     // wallet: { type: Number },
     role: {
         type: String,
-        enum: Object.values(Role),
-        default: Role.USER
+        enum: Object.values(Role)
     },
     phone: { type: Number },
     picture: { type: String },

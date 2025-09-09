@@ -20,9 +20,12 @@ const sendresponse_1 = require("../../utils/sendresponse");
 const AppError_1 = __importDefault(require("../../errorHelper/AppError"));
 const wallet_service_1 = require("../waller/wallet.service");
 const user_model_1 = require("./user.model");
+const wallet_model_1 = require("../waller/wallet.model");
+const wallet_interface_1 = require("../waller/wallet.interface");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_service_1.userService.createUser(req.body);
+    // console.log(user)
     (0, sendresponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.CREATED,
         message: "User created successfully",
@@ -38,8 +41,6 @@ const addmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void
         // const data = req.body;
         // console.log("data for reciver", data)
         if (!req.user) {
-            // eslint-disable-next-line no-console
-            console.log("req.user", req.user);
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
         }
         const userId = req.user.userId;
@@ -72,12 +73,23 @@ const sendmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(voi
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
         }
         const userId = req.user.userId;
+        const isUservalid = yield wallet_model_1.Wallet.findOne({ owner: userId });
+        if (!isUservalid) {
+            // eslint-disable-next-line no-console
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
+        }
+        if (isUservalid.status === wallet_interface_1.WalletStatus.BLOCKED) {
+            // eslint-disable-next-line no-console
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
+        }
+        console.log("isUservalid", isUservalid);
         // console.log("req.user in add money",agent,userId ,amount)
         if (!amount || amount <= 0) {
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
             // return res.status(400).json({ message: 'Invalid amount' });
         }
         const Isreciverisagent = yield user_model_1.User.findOne({ _id: reciverId });
+        console.log("Isreciverisagent", Isreciverisagent);
         if (!Isreciverisagent) {
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not axit");
         }

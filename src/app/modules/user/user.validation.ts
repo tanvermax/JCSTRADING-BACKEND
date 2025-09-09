@@ -1,12 +1,12 @@
 import z from "zod";
 
 export const createUserZodSchema = z.object({
-    name: z.string({error:"name should be string"})
-    .min(2,{error:"minimum 2 charecter"}).max(30,{error:"max 30 charecter"}),
-   email: z
+    name: z.string({ error: "name should be string" })
+        .min(2, { error: "minimum 2 charecter" }).max(30, { error: "max 30 charecter" }),
+    email: z
         .string({ error: "Email is required" })
         .email({ message: "Invalid email format" }),
-       password: z
+    password: z
         .string({ error: "Password is required" })
         .min(8)
         .regex(
@@ -16,6 +16,8 @@ export const createUserZodSchema = z.object({
                     "Password must be at least 8 characters long, contain 1 uppercase letter, 1 digit, and 2 special characters",
             }
         ).optional(),
+    role: z.string({ error: "role should be here" })
+    .optional(),
     phone: z
         .string({ error: "Phone number must be string" })
         .min(11, { message: "Minimum 11 characters" })

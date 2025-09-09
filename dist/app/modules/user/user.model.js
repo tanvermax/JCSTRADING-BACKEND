@@ -17,8 +17,7 @@ const useSchema = new mongoose_1.Schema({
     // wallet: { type: Number },
     role: {
         type: String,
-        enum: Object.values(user_interface_1.Role),
-        default: user_interface_1.Role.USER
+        enum: Object.values(user_interface_1.Role)
     },
     phone: { type: Number },
     picture: { type: String },

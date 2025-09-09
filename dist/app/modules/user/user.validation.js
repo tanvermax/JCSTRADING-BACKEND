@@ -17,6 +17,8 @@ exports.createUserZodSchema = zod_1.default.object({
         .regex(/^(?=(?:.*[^A-Za-z0-9]){2,})(?=.*[A-Z])(?=.*\d).{8,}$/, {
         message: "Password must be at least 8 characters long, contain 1 uppercase letter, 1 digit, and 2 special characters",
     }).optional(),
+    role: zod_1.default.string({ error: "role should be here" })
+        .optional(),
     phone: zod_1.default
         .string({ error: "Phone number must be string" })
         .min(11, { message: "Minimum 11 characters" })
