@@ -64,83 +64,101 @@ const addmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void
     }
 }));
 const sendmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // const { amount } = req.body;
-        const { amount, reciverId } = req.body;
-        if (!req.user) {
-            // eslint-disable-next-line no-console
-            console.log("req.user", req.user);
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
-        }
-        const userId = req.user.userId;
-        const isUservalid = yield wallet_model_1.Wallet.findOne({ owner: userId });
-        if (!isUservalid) {
-            // eslint-disable-next-line no-console
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
-        }
-        if (isUservalid.status === wallet_interface_1.WalletStatus.BLOCKED) {
-            // eslint-disable-next-line no-console
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
-        }
-        console.log("isUservalid", isUservalid);
-        // console.log("req.user in add money",agent,userId ,amount)
-        if (!amount || amount <= 0) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
-            // return res.status(400).json({ message: 'Invalid amount' });
-        }
-        const Isreciverisagent = yield user_model_1.User.findOne({ _id: reciverId });
-        console.log("Isreciverisagent", Isreciverisagent);
-        if (!Isreciverisagent) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not axit");
-        }
-        if (Isreciverisagent.role === "AGENT") {
-            (0, sendresponse_1.sendResponse)(res, {
-                statusCode: http_status_codes_1.default.FORBIDDEN,
-                message: "please provide user id , you can not send money to a agent",
-                success: true,
-                data: null
-            });
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "please provide user id , you can not send money to a agent");
-        }
-        const updatedWallet = yield (0, wallet_service_1.sendMoney)(reciverId, userId, amount);
-        // console.log("updatedWallet", updatedWallet)
-        (0, sendresponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.CREATED,
-            message: "Money added request given successfully",
-            success: true,
-            data: updatedWallet,
+    var _a;
+    const { amount, reciverId } = req.body;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    if (!userId) {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_REQUEST,
+            message: "User is not authenticated",
+            success: false,
+            data: null,
         });
     }
-    catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
+    const isUservalid = yield wallet_model_1.Wallet.findOne({ owner: userId });
+    const isRecivervalid = yield wallet_model_1.Wallet.findOne({ owner: reciverId });
+    if (!isUservalid || !isRecivervalid) {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_REQUEST,
+            message: "Sender or receiver not found",
+            success: false,
+            data: null,
+        });
     }
+    if (isUservalid.status === wallet_interface_1.WalletStatus.BLOCKED || isRecivervalid.status === wallet_interface_1.WalletStatus.BLOCKED) {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_REQUEST,
+            message: "User account is blocked",
+            success: false,
+            data: null,
+        });
+    }
+    if (!amount || amount <= 0) {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_REQUEST,
+            message: "Invalid amount",
+            success: false,
+            data: null,
+        });
+    }
+    const Isreciverisagent = yield user_model_1.User.findOne({ _id: reciverId });
+    if (!Isreciverisagent) {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_REQUEST,
+            message: "Receiver user does not exist",
+            success: false,
+            data: null,
+        });
+    }
+    if (Isreciverisagent.role === "AGENT") {
+        return (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.FORBIDDEN,
+            message: "You cannot send money to an agent",
+            success: false,
+            data: null,
+        });
+    }
+    const updatedWallet = yield (0, wallet_service_1.sendMoney)(reciverId, userId, amount);
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.CREATED,
+        message: "Money transfer successful",
+        success: true,
+        data: updatedWallet,
+    });
 }));
 const userwithdrawmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { agent, amount } = req.body;
-        if (!req.user) {
-            // eslint-disable-next-line no-console
-            console.log("req.user", req.user);
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "user is not auhtenticated");
-        }
-        const userId = req.user.userId;
-        if (!amount || amount <= 0) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
-            // return res.status(400).json({ message: 'Invalid amount' });
-        }
-        const updatedWallet = yield (0, wallet_service_1.withdrawfromWallet)(agent, userId, amount);
-        (0, sendresponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.CREATED,
-            message: "Money added request given successfully",
-            success: true,
-            data: updatedWallet
-        });
+    var _a;
+    const { agent, amount } = req.body;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    if (!userId) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User is not authenticated");
     }
-    catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
+    if (!amount || amount <= 0) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
     }
+    // 1. Validate the user's wallet status
+    const userWallet = yield wallet_model_1.Wallet.findOne({ owner: userId });
+    if (!userWallet) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User wallet not found");
+    }
+    if (userWallet.status === wallet_interface_1.WalletStatus.BLOCKED) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User account is blocked. Cannot withdraw money.");
+    }
+    // 2. Validate the agent's wallet status
+    const agentWallet = yield wallet_model_1.Wallet.findOne({ owner: agent });
+    if (!agentWallet) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Agent wallet not found");
+    }
+    if (agentWallet.status === wallet_interface_1.WalletStatus.SUSPEND) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Agent account is SUSPEND. Cannot process withdrawal.");
+    }
+    const updatedWallet = yield (0, wallet_service_1.withdrawfromWallet)(agent, userId, amount);
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.CREATED,
+        message: "Withdrawal request submitted successfully",
+        success: true,
+        data: updatedWallet,
+    });
 }));
 exports.userController = {
     createUser, addmoney, userwithdrawmoney, sendmoney

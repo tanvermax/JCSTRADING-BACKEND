@@ -18,37 +18,45 @@ const catchAsync_1 = require("../../utils/catchAsync");
 const AppError_1 = __importDefault(require("../../errorHelper/AppError"));
 const sendresponse_1 = require("../../utils/sendresponse");
 const wallet_service_1 = require("../waller/wallet.service");
+const wallet_model_1 = require("../waller/wallet.model");
+const wallet_interface_1 = require("../waller/wallet.interface");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const addmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // const { amount } = req.body;
-        const { amount, userId } = req.body;
-        // const data = req.body;
-        // console.log("data for reciver", data)
-        if (!req.user) {
-            // eslint-disable-next-line no-console
-            console.log("req.user", req.user);
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Agent is not auhtenticated");
-        }
-        const agentId = req.user.userId;
-        // console.log("req.user in add money",agent,userId ,amount)
-        if (!amount || amount <= 0) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
-            // return res.status(400).json({ message: 'Invalid amount' });
-        }
-        const updatedWallet = yield (0, wallet_service_1.addMoneyToWallet)(userId, agentId, amount);
-        // console.log("updatedWallet", updatedWallet)
-        (0, sendresponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.CREATED,
-            message: "Money added request given successfully",
-            success: true,
-            data: updatedWallet,
-        });
+    var _a;
+    const { amount, userId } = req.body;
+    const agentId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    // 1. Validate Agent Authentication
+    if (!agentId) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Agent is not authenticated");
     }
-    catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
+    // 2. Validate Amount
+    if (!amount || amount <= 0) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid amount");
     }
+    // 3. Validate Wallet Statuses
+    const agentWallet = yield wallet_model_1.Wallet.findOne({ owner: agentId });
+    if (!agentWallet) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Agent wallet not found");
+    }
+    if (agentWallet.status === wallet_interface_1.WalletStatus.SUSPEND) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Agent's account is SUSPEND. Cannot add money.");
+    }
+    const userWallet = yield wallet_model_1.Wallet.findOne({ owner: userId });
+    if (!userWallet) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User wallet not found");
+    }
+    if (userWallet.status === wallet_interface_1.WalletStatus.BLOCKED) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User's account is blocked. Cannot add money.");
+    }
+    // 4. Perform the Transaction
+    const updatedWallet = yield (0, wallet_service_1.addMoneyToWallet)(userId, agentId, amount);
+    // 5. Send Success Response
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.CREATED,
+        message: "Money added request given successfully",
+        success: true,
+        data: updatedWallet,
+    });
 }));
 exports.agentController = {
     addmoney
