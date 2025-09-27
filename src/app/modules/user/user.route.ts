@@ -15,7 +15,7 @@ const router = Router();
 
 router.post("/register", validateRequest(createUserZodSchema), userController.createUser)
 router.post("/sendmoney",cheakAuth(Role.USER),userController.sendmoney);
-router.post("/withdraw",cheakAuth(),userController.userwithdrawmoney)
+router.post("/withdraw",cheakAuth(Role.USER),userController.userwithdrawmoney);
 router.get('/history',cheakAuth(Role.USER),  transactionController.getHistory);
 
 export const UserRoutes = router;

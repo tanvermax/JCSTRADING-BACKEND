@@ -12,7 +12,7 @@ app.use(express_1.default.json());
 app.use("/api/v1", routes_1.router);
 app.get("/", (req, res) => {
     res.status(200).json({
-        message: "Welcome to Digital Wallet Database backend system"
+        message: "Welcome to JCS Trading Database backend system"
     });
 });
 app.use(globalerrorhandler_1.globalErrorHandler);

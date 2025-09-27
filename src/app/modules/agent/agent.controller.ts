@@ -28,6 +28,12 @@ const addmoney = catchAsync(async (req: Request, res: Response, next: NextFuncti
         throw new AppError(httpStatus.NOT_FOUND, "Agent wallet not found");
     }
     if (agentWallet.status === WalletStatus.SUSPEND) {
+            sendResponse(res, {
+        statusCode: httpStatus.BAD_GATEWAY,
+        message: "Agent's account is SUSPEND. Cannot add money.",
+        success: false,
+        data: null,
+    });
         throw new AppError(httpStatus.BAD_REQUEST, "Agent's account is SUSPEND. Cannot add money.");
     }
 
