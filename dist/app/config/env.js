@@ -12,7 +12,10 @@ const loadEnvVariables = () => {
         "NODE_ENV",
         "JWT_ACCES_SECRET",
         "JWT_ACCES_EXPIRE",
-        "BCRYPT_SALT_ROUNDE"
+        "BCRYPT_SALT_ROUNDE",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET"
     ];
     requiredEnvVariable.forEach(key => {
         if (!process.env[key]) {
@@ -26,7 +29,12 @@ const loadEnvVariables = () => {
         NODE_ENV: process.env.NODE_ENV,
         BCRYPT_SALT_ROUNDE: process.env.BCRYPT_SALT_ROUNDE,
         JWT_ACCES_EXPIRE: process.env.JWT_ACCES_EXPIRE,
-        JWT_ACCES_SECRET: process.env.JWT_ACCES_SECRET
+        JWT_ACCES_SECRET: process.env.JWT_ACCES_SECRET,
+        CLOUDINARY: {
+            CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+            CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+            CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+        }
     };
 };
 exports.envVarse = loadEnvVariables();

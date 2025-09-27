@@ -7,6 +7,7 @@ const user_route_1 = require("../modules/user/user.route");
 const transaction_route_1 = require("../modules/transaction/transaction.route");
 const agent_route_1 = require("../modules/agent/agent.route");
 const admin_routs_1 = require("../modules/admin/admin.routs");
+const product_route_1 = require("../modules/product/product.route");
 exports.router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -28,8 +29,14 @@ const moduleRoutes = [
     {
         path: "/admin",
         route: admin_routs_1.AdminRouter
+    },
+    {
+        path: "/product",
+        route: product_route_1.ProductRoute
     }
 ];
 moduleRoutes.forEach((route) => {
-    exports.router.use(route.path, route.route);
+    {
+        exports.router.use(route.path, route.route);
+    }
 });

@@ -39,6 +39,12 @@ const addmoney = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Agent wallet not found");
     }
     if (agentWallet.status === wallet_interface_1.WalletStatus.SUSPEND) {
+        (0, sendresponse_1.sendResponse)(res, {
+            statusCode: http_status_codes_1.default.BAD_GATEWAY,
+            message: "Agent's account is SUSPEND. Cannot add money.",
+            success: false,
+            data: null,
+        });
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Agent's account is SUSPEND. Cannot add money.");
     }
     const userWallet = yield wallet_model_1.Wallet.findOne({ owner: userId });

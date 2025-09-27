@@ -13,6 +13,7 @@ exports.validateRequest = void 0;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validateRequest = (ZodSchema) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        req.body = JSON.parse(req.body.data) || req.body;
         req.body = yield ZodSchema.parseAsync(req.body);
         next();
     }

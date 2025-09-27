@@ -90,20 +90,4 @@ const updateagentWallet = (0, catchAsync_1.catchAsync)((req, res, next) => __awa
 }));
 exports.adminController = {
     getAllUser, getWallets, getTransactions, updateWalletStatus, updateagentWallet
-    // getallhistory
 };
-// Convert query to Record<string, string>
-// const stringQuery: Record<string, string> = {};
-// Object.keys(query).forEach(key => {
-//     const value = query[key];
-//     if (typeof value === 'string') {
-//         stringQuery[key] = value;
-//     } else if (Array.isArray(value)) {
-//         stringQuery[key] = value.join(',');
-//     } else if (typeof value === 'object' && value !== null) {
-//         stringQuery[key] = JSON.stringify(value);
-//     } else if (value !== undefined) {
-//         stringQuery[key] = String(value);
-//     }
-// });
-// console.log("uiserid", stringQuery);
