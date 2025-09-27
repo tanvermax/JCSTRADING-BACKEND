@@ -7,13 +7,14 @@ const app = express();
 
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 
-app.use("/api/v1",router)
+app.use("/api/v1", router)
 
-app.get ("/",(req:Request,res:Response)=>{
+app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
-        message:"Welcome to JCS Trading Database backend system"
+        message: "Welcome to JCS Trading Database backend system"
     })
 })
 

@@ -4,6 +4,7 @@ import { UserRoutes } from "../modules/user/user.route";
 import { TransactionRoute } from "../modules/transaction/transaction.route";
 import { AgentRouter } from "../modules/agent/agent.route";
 import { AdminRouter } from "../modules/admin/admin.routs";
+import { ProductRoute } from "../modules/product/product.route";
 
 export const router = Router();
 
@@ -20,18 +21,25 @@ const moduleRoutes = [
         path: "/auth",
         route: AuthRoute
     },
-     {
+    {
         path: "/transaction",
         route: TransactionRoute
     },
     {
         path: "/admin",
         route: AdminRouter
+    },
+    {
+        path: "/product",
+        route: ProductRoute
     }
 ]
 
 
 
 moduleRoutes.forEach((route) => {
-    router.use(route.path, route.route);
+    {
+        router.use(route.path, route.route)
+
+    }
 });
