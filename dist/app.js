@@ -13,7 +13,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use("/api/v1", routes_1.router);
 app.get("/", (req, res) => {
     res.status(200).json({
-        message: "Welcome to JCS Trading Database backend system"
+        message: "Welcome to PH BACKEND Database backend system"
     });
 });
 app.use(globalerrorhandler_1.globalErrorHandler);
