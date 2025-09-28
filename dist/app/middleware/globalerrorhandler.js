@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -11,15 +20,24 @@ const zodValidation_1 = require("../helper/zodValidation");
 const AppError_1 = __importDefault(require("../errorHelper/AppError"));
 const env_1 = require("../config/env");
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const cloudinary_config_1 = require("../config/cloudinary.config");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-const globalErrorHandler = (err, req, res, next) => {
+const globalErrorHandler = (err, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
+    console.log({ file: req.files });
+    if (req.file) {
+        yield (0, cloudinary_config_1.deleteImageForCloudinary)(req.file.path);
+    }
+    if (req.files && Array.isArray(req.files) && req.files.length) {
+        const imageUrls = req.files.map(file => file.path);
+        yield Promise.all(imageUrls.map(url => (0, cloudinary_config_1.deleteImageForCloudinary)(url)));
+    }
     let statusCode = http_status_codes_1.default.INTERNAL_SERVER_ERROR;
     let message = err.message || "Something went wrong!!";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let errorSources = [];
     // eslint-disable-next-line prefer-const
-    let stack = env_1.envVarse.NODE_ENV === "devolopment" ? err.stack : null;
+    // let stack = envVarse.NODE_ENV === "devolopment" ? err.stack : null;
     if (err.code === 11000) {
         const simplifiedError = (0, handleDuplicateError_1.handleDuplicateError)(err);
         statusCode = simplifiedError.statusCode;
@@ -58,7 +76,8 @@ const globalErrorHandler = (err, req, res, next) => {
         success: false,
         message,
         errorSources,
-        stack
+        err: env_1.envVarse.NODE_ENV === "devolopment" ? err : null,
+        stack: env_1.envVarse.NODE_ENV === "devolopment" ? err.stack : null
     });
-};
+});
 exports.globalErrorHandler = globalErrorHandler;

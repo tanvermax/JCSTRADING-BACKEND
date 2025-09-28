@@ -10,14 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
-const catchAsync_1 = require("../../utils/catchAsync");
 const product_service_1 = require("./product.service");
+const catchAsync_1 = require("../../utils/catchAsync");
 const sendresponse_1 = require("../../utils/sendresponse");
 const creatProduct = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log("req.body in controller:", {
-    //     file: req.file,
-    //     body: req.body.data
-    // });
     var _a;
     const payload = Object.assign(Object.assign({}, req.body), { images: (_a = req.file) === null || _a === void 0 ? void 0 : _a.path });
     const product = yield product_service_1.productService.createProduct(payload);
@@ -28,6 +24,39 @@ const creatProduct = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
         data: product,
     });
 }));
+const getAllProduct = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query;
+    console.log("query from controller", query);
+    const result = yield product_service_1.productService.getAllProduct(query);
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: 201,
+        message: "all product retrive  successfully",
+        success: true,
+        data: result.data,
+        meta: result.meta
+    });
+}));
+const updateProduct = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const id = req.params.id;
+    const payload = Object.assign(Object.assign({}, req.body), { images: (_a = req.file) === null || _a === void 0 ? void 0 : _a.path });
+    const divison = yield product_service_1.productService.updateproduct(id, payload);
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: 201,
+        message: "product updated successfully",
+        success: true,
+        data: divison,
+    });
+}));
+const deleteProduct = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield product_service_1.productService.deleteProduct(req.params.id);
+    (0, sendresponse_1.sendResponse)(res, {
+        statusCode: 201,
+        message: "product delete successfully",
+        success: true,
+        data: product,
+    });
+}));
 exports.ProductController = {
-    creatProduct
+    creatProduct, deleteProduct, getAllProduct, updateProduct
 };
