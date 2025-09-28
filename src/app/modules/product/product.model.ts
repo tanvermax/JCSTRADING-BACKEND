@@ -10,7 +10,7 @@ const ProductSchema = new Schema<IProduct>(
         category: { type: String, required: true },
         slug: { type: String, required: true, unique: true },
         newproduct: { type: Boolean, default: true },
-        images: [{ type: String, required: true }],
+        images: { type: String, required: true },
         brand: { type: String },
         sku: { type: String, unique: true, sparse: true },
         tags: [{ type: String }],

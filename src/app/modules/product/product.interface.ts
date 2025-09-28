@@ -8,7 +8,7 @@ export interface IProduct {
     category: string;
     slug: string,
     newproduct:boolean,
-    images: string[]; // array of image URLs
+    images: string;
     brand?: string; // optional
     sku?: string;   // stock keeping unit
     tags?: string[];

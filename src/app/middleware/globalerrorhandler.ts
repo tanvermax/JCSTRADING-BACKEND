@@ -6,15 +6,28 @@ import { Zodvalidation } from "../helper/zodValidation";
 import AppError from "../errorHelper/AppError";
 import { envVarse } from "../config/env";
 import httpStatus from 'http-status-codes';
+import { TErrorSources } from "../intreface/error.types";
+import { deleteImageForCloudinary } from "../config/cloudinary.config";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log({ file: req.files });
+    if (req.file) {
+        await deleteImageForCloudinary(req.file.path)
+    }
+
+   if (req.files && Array.isArray(req.files) && req.files.length) {
+        const imageUrls = (req.files as Express.Multer.File[]).map(file => file.path)
+
+        await Promise.all(imageUrls.map(url => deleteImageForCloudinary(url)))
+    }
+
     let statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     let message = err.message || "Something went wrong!!";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let errorSources: any[] = [];
+    let errorSources: TErrorSources[] = [];
     // eslint-disable-next-line prefer-const
-    let stack = envVarse.NODE_ENV === "devolopment" ? err.stack : null;
+    // let stack = envVarse.NODE_ENV === "devolopment" ? err.stack : null;
 
     if (err.code === 11000) {
         const simplifiedError = handleDuplicateError(err);
@@ -35,7 +48,7 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
         const simplifiedError = Zodvalidation(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources?? [];
+        errorSources = simplifiedError.errorSources ?? [];
     } else if (err instanceof AppError) {
         statusCode = err.statusCode;
         message = err.message;
@@ -45,11 +58,12 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
         message = err.message;
         errorSources = [{ path: "", message: err.message }];
     }
-    
+
     res.status(statusCode).json({
         success: false,
         message,
         errorSources,
-        stack
+        err: envVarse.NODE_ENV === "devolopment" ? err : null,
+        stack: envVarse.NODE_ENV === "devolopment" ? err.stack : null
     });
 };
