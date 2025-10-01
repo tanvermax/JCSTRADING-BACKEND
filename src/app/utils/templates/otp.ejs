@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSCTRADING - OTP Verification</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: #FF781A;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+      letter-spacing: 1px;
+    }
+    .content {
+      padding: 30px 25px;
+      text-align: center;
+    }
+    .content h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1e293b;
+    }
+    .content p {
+      margin: 15px 0;
+      font-size: 15px;
+      color: #334155;
+    }
+    .otp-box {
+      display: inline-block;
+      background: #f1f5f9;
+      padding: 14px 28px;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #1d4ed8;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .footer {
+      background: #f9fafc;
+      padding: 15px;
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+        
+      <h1>JSCTRADING</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <h2>Hello <%= name %>,</h2>
+      <p>Your one-time password (OTP) is:</p>
+      <div class="otp-box"><%= otp %></div>
+      <p>This code is valid for <strong>2 minutes</strong>. Please do not share it with anyone.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      &copy; <%= new Date().getFullYear() %> JSCTRADING. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>

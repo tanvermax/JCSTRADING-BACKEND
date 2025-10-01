@@ -14,7 +14,24 @@ interface EnvConfig {
         CLOUDINARY_CLOUD_NAME: string,
         CLOUDINARY_API_KEY: string,
         CLOUDINARY_API_SECRET: string
-    }
+    },
+    GOOGLE_CLIENT_SECRET: string,
+    GOOGLE_CLIENT_ID: string,
+    EXPRESS_SESSION_SECRECT: string,
+    GOOGLE_CALL_BACK_URL: string,
+    FRONT_END_URL: string,
+    REDIS_HOST: string,
+    REDIS_PORT: string,
+    REDIS_USERNAME: string,
+    REDIS_PASSWORD: string,
+   EMAIL_SENDER: {
+     SMTP_PASS: string,
+    SMTP_PORT: string,
+    SMTP_HOST: string,
+    SMTP_USER: string,
+    SMTP_FORM: string,
+   }
+
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -26,7 +43,22 @@ const loadEnvVariables = (): EnvConfig => {
         "BCRYPT_SALT_ROUNDE",
         "CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
-        "CLOUDINARY_API_SECRET"
+        "CLOUDINARY_API_SECRET",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "EXPRESS_SESSION_SECRECT",
+        "GOOGLE_CALL_BACK_URL",
+        "FRONT_END_URL",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_USERNAME",
+        "REDIS_PASSWORD",
+        "SMTP_PASS",
+        "SMTP_PORT",
+        "SMTP_HOST",
+        "SMTP_USER",
+        "SMTP_FORM",
+
     ];
 
     requiredEnvVariable.forEach(key => {
@@ -47,7 +79,23 @@ const loadEnvVariables = (): EnvConfig => {
             CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
             CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
             CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
-        }
+        },
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+        EXPRESS_SESSION_SECRECT: process.env.EXPRESS_SESSION_SECRECT as string,
+        GOOGLE_CALL_BACK_URL: process.env.GOOGLE_CALL_BACK_URL as string,
+        FRONT_END_URL: process.env.FRONT_END_URL as string,
+        REDIS_HOST: process.env.REDIS_HOST as string,
+        REDIS_PORT: process.env.REDIS_PORT as string,
+        REDIS_USERNAME: process.env.REDIS_USERNAME as string,
+        REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
+       EMAIL_SENDER:{
+         SMTP_PASS: process.env.SMTP_PASS as string,
+        SMTP_PORT: process.env.SMTP_PORT as string,
+        SMTP_HOST: process.env.SMTP_HOST as string,
+        SMTP_USER: process.env.SMTP_USER as string,
+        SMTP_FORM: process.env.SMTP_FORM as string,
+       }
 
 
     }

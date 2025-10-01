@@ -1,84 +1,48 @@
+import httpStatus from 'http-status-codes';
 import { NextFunction, Request, Response } from "express";
 import AppError from "../errorHelper/AppError";
 import { verifyToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
-// import { Role } from "../modules/user/user.interface";
 import { envVarse } from "../config/env";
+import { IsActive } from '../modules/user/user.interface';
+import { User } from '../modules/user/user.model';
 
 
+export const cheakAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
+    try {
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        interface Request {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            user?: any;
+        const accesToken = req.headers.authorization || req.cookies.accessToken;
+        console.log(accesToken)
+        if (!accesToken) {
+            throw new AppError(403, "no Token found")
         }
+
+        const verifiedToken = verifyToken(accesToken, envVarse.JWT_ACCES_SECRET) as JwtPayload;
+
+        const isUserExist = await User.findOne({ email: verifiedToken.email })
+        if (!isUserExist) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User does not exist")
+        }
+        if (!isUserExist.isVerified) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User is not verified")
+        }
+        if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
+            throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
+        }
+        if (isUserExist.isDeleted) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
+        }
+
+        if (!authRoles.includes(verifiedToken.role)) {
+            throw new AppError(403, "You are not permitted to view this route!!!")
+        }
+
+        req.user = verifiedToken
+        next()
+    } catch (error) {
+        console.log("JWT error", error)
+        next(error);
     }
+
 }
 
-export const cheakAuth = (...authRoles: string[]) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const accestoken = req.headers.authorization
-
-            if (!accestoken) {
-                throw new AppError(403, "no Token found")
-            }
-
-            const decodedToken = verifyToken(accestoken, envVarse.JWT_ACCES_SECRET) as JwtPayload;
-            // const IsUserExit = await User.findOne({ email: decodedToken.email });
-
-            // This is the correct way to handle role-based authorization.
-            // It checks if any roles were passed to the middleware and if the user's role is included.
-            if (authRoles.length > 0 && !authRoles.includes(decodedToken.role)) {
-                throw new AppError(403, "You are not authorized to perform this action.");
-            }
-            // console.log("Role",Role)
-            // console.log("decodedToken",decodedToken)
-            // if ((decodedToken as JwtPayload).role !== Role.ADMIN && (decodedToken as JwtPayload).role !== Role.AGENT) {
-            //     throw new AppError(403, "you are not permited to see all user")
-            // }
-            // console.log(" in user route", decodedToken)
-
-            req.user = decodedToken;
-            next();
-        } catch (error) {
-            console.log(error)
-            next(error);
-        }
-    }
-}
-
-// export const cheakAuthuser = (...authRoles: string[]) => {
-//     return async (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const accestoken = req.headers.authorization
-
-//             if (!accestoken) {
-//                 throw new AppError(403, "no Token found")
-//             }
-
-//             const decodedToken = verifyToken(accestoken, envVarse.JWT_ACCES_SECRET) as JwtPayload;
-//             // const IsUserExit = await User.findOne({ email: decodedToken.email });
-
-//             // This is the correct way to handle role-based authorization.
-//             // It checks if any roles were passed to the middleware and if the user's role is included.
-//             if (authRoles.length > 0 && !authRoles.includes(decodedToken.role)) {
-//                 throw new AppError(403, "You are not authorized to perform this action.");
-//             }
-//             // console.log("Role",Role)
-//             console.log("decodedToken",decodedToken)
-//             if ((decodedToken as JwtPayload).role !== Role.USER ) {
-//                 throw new AppError(403, "you are not permited to see all user")
-//             }
-//             // console.log(" in user route", decodedToken)
-
-//             req.user = decodedToken;
-//             next();
-//         } catch (error) {
-//             console.log(error)
-//             next(error);
-//         }
-//     }
-// }

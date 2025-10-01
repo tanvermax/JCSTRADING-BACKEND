@@ -5,6 +5,7 @@ import { TransactionRoute } from "../modules/transaction/transaction.route";
 import { AgentRouter } from "../modules/agent/agent.route";
 import { AdminRouter } from "../modules/admin/admin.routs";
 import { ProductRoute } from "../modules/product/product.route";
+import { OtpRouter } from "../modules/otp/otp.routs";
 
 export const router = Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
     {
         path: "/product",
         route: ProductRoute
+    },
+    {
+        path:"/otp",
+        route:OtpRouter
     }
 ]
 

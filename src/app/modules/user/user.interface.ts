@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 
 export enum Role {
-    // SUPER_ADMIN = "SUPER_ADMIN",
+    SUPER_ADMIN = "SUPER_ADMIN",
     ADMIN = "ADMIN",
     USER = "USER",
     AGENT = "AGENT",
@@ -25,7 +25,7 @@ export enum IsActive {
 export interface IUser {
     _id?: Types.ObjectId,
     name: string;
-    // wallet:number,
+
     email: string;
     password?: string;
     phone?: number;

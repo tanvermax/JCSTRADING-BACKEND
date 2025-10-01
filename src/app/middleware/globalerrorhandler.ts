@@ -12,11 +12,12 @@ import { deleteImageForCloudinary } from "../config/cloudinary.config";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
     console.log({ file: req.files });
+    console.error(`Error on: ${req.method} ${req.originalUrl}`);
     if (req.file) {
         await deleteImageForCloudinary(req.file.path)
     }
 
-   if (req.files && Array.isArray(req.files) && req.files.length) {
+    if (req.files && Array.isArray(req.files) && req.files.length) {
         const imageUrls = (req.files as Express.Multer.File[]).map(file => file.path)
 
         await Promise.all(imageUrls.map(url => deleteImageForCloudinary(url)))
@@ -33,26 +34,29 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
         const simplifiedError = handleDuplicateError(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources ?? [];
+        errorSources = simplifiedError.errorSources as TErrorSources[];
     } else if (err.name === "CastError") {
         const simplifiedError = handleCastError(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources ?? [];
+        errorSources = simplifiedError.errorSources as TErrorSources[];
     } else if (err.name === "ValidationError") {
         const simplifiedError = handleValidationerror(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources ?? [];
+        errorSources = simplifiedError.errorSources as TErrorSources[];
     } else if (err.name === "ZodError") {
         const simplifiedError = Zodvalidation(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = simplifiedError.errorSources ?? [];
+        errorSources = simplifiedError.errorSources as TErrorSources[];
     } else if (err instanceof AppError) {
+        // 💡 এই ব্লকটি আপনার 401 ত্রুটিটিকে ধরা উচিত
         statusCode = err.statusCode;
         message = err.message;
         errorSources = [{ path: "", message: err.message }];
+        // 💡 DEBUGGING: এখানে লগ যোগ করুন
+        console.log(`Global Handler Caught AppError: Status ${statusCode}, Message: ${message}`);
     } else if (err instanceof Error) {
         statusCode = httpStatus.INTERNAL_SERVER_ERROR;
         message = err.message;

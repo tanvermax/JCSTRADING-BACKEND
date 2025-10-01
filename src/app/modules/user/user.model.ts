@@ -23,7 +23,7 @@ const useSchema = new Schema<IUser>({
         enum: Object.values(Role)
     },
     phone: { type: Number },
-    picture: { type: String },
+    picture: { type: String,default:null },
     address: { type: String },
     isDeleted: { type: Boolean, default: false },
     isActive: {

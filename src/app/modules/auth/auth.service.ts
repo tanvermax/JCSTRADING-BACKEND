@@ -5,8 +5,9 @@ import { IUser } from "../user/user.interface"
 import { User } from "../user/user.model"
 import bcryptjs from "bcryptjs"
 import Jwt from 'jsonwebtoken';
-import { generateTOken } from '../../utils/jwt';
+import { generateToken } from '../../utils/jwt';
 import { envVarse } from '../../config/env';
+import { createNewAccessTokenWithrefreshtoken } from '../../utils/user.token';
 
 const credentialsLogin = async (payoad: Partial<IUser>) => {
 
@@ -36,7 +37,7 @@ const credentialsLogin = async (payoad: Partial<IUser>) => {
     }
 
 
-    const accesToken = generateTOken(jwtPayload,
+    const accesToken = generateToken(jwtPayload,
         envVarse.JWT_ACCES_SECRET, envVarse.JWT_ACCES_EXPIRE
     )
 
@@ -46,9 +47,16 @@ const credentialsLogin = async (payoad: Partial<IUser>) => {
         accesToken
     }
 }
+const getNewAccessToken = async (refreshToken: string) => {
+    const newAccessToken = await createNewAccessTokenWithrefreshtoken(refreshToken)
 
+    return {
+        accessToken: newAccessToken
+    }
+
+}
 
 
 export const AuthService = {
-    credentialsLogin
+    credentialsLogin,getNewAccessToken
 }

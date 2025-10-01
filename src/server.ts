@@ -2,6 +2,7 @@ import { Server } from "http"
 import mongoose from "mongoose";
 import app from "./app"
 import { envVarse } from "./app/config/env";
+import { connectRedis } from "./app/config/redis.config";
 let server: Server;
 
 
@@ -18,8 +19,13 @@ const startserver = async () => {
     }
 }
 
-startserver();
+// startserver();
 
+(async () => {
+    await connectRedis()
+
+    await startserver()
+})()
 
 
 
