@@ -13,65 +13,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cheakAuth = void 0;
+const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const AppError_1 = __importDefault(require("../errorHelper/AppError"));
 const jwt_1 = require("../utils/jwt");
-// import { Role } from "../modules/user/user.interface";
 const env_1 = require("../config/env");
-const cheakAuth = (...authRoles) => {
-    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const accestoken = req.headers.authorization;
-            if (!accestoken) {
-                throw new AppError_1.default(403, "no Token found");
-            }
-            const decodedToken = (0, jwt_1.verifyToken)(accestoken, env_1.envVarse.JWT_ACCES_SECRET);
-            // const IsUserExit = await User.findOne({ email: decodedToken.email });
-            // This is the correct way to handle role-based authorization.
-            // It checks if any roles were passed to the middleware and if the user's role is included.
-            if (authRoles.length > 0 && !authRoles.includes(decodedToken.role)) {
-                throw new AppError_1.default(403, "You are not authorized to perform this action.");
-            }
-            // console.log("Role",Role)
-            // console.log("decodedToken",decodedToken)
-            // if ((decodedToken as JwtPayload).role !== Role.ADMIN && (decodedToken as JwtPayload).role !== Role.AGENT) {
-            //     throw new AppError(403, "you are not permited to see all user")
-            // }
-            // console.log(" in user route", decodedToken)
-            req.user = decodedToken;
-            next();
+const user_interface_1 = require("../modules/user/user.interface");
+const user_model_1 = require("../modules/user/user.model");
+const cheakAuth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const accesToken = req.headers.authorization || req.cookies.accessToken;
+        console.log(accesToken);
+        if (!accesToken) {
+            throw new AppError_1.default(403, "no Token found");
         }
-        catch (error) {
-            console.log(error);
-            next(error);
+        const verifiedToken = (0, jwt_1.verifyToken)(accesToken, env_1.envVarse.JWT_ACCES_SECRET);
+        const isUserExist = yield user_model_1.User.findOne({ email: verifiedToken.email });
+        if (!isUserExist) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User does not exist");
         }
-    });
-};
+        if (!isUserExist.isVerified) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User is not verified");
+        }
+        if (isUserExist.isActive === user_interface_1.IsActive.BLOCKED || isUserExist.isActive === user_interface_1.IsActive.INACTIVE) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, `User is ${isUserExist.isActive}`);
+        }
+        if (isUserExist.isDeleted) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User is deleted");
+        }
+        if (!authRoles.includes(verifiedToken.role)) {
+            throw new AppError_1.default(403, "You are not permitted to view this route!!!");
+        }
+        req.user = verifiedToken;
+        next();
+    }
+    catch (error) {
+        console.log("JWT error", error);
+        next(error);
+    }
+});
 exports.cheakAuth = cheakAuth;
-// export const cheakAuthuser = (...authRoles: string[]) => {
-//     return async (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const accestoken = req.headers.authorization
-//             if (!accestoken) {
-//                 throw new AppError(403, "no Token found")
-//             }
-//             const decodedToken = verifyToken(accestoken, envVarse.JWT_ACCES_SECRET) as JwtPayload;
-//             // const IsUserExit = await User.findOne({ email: decodedToken.email });
-//             // This is the correct way to handle role-based authorization.
-//             // It checks if any roles were passed to the middleware and if the user's role is included.
-//             if (authRoles.length > 0 && !authRoles.includes(decodedToken.role)) {
-//                 throw new AppError(403, "You are not authorized to perform this action.");
-//             }
-//             // console.log("Role",Role)
-//             console.log("decodedToken",decodedToken)
-//             if ((decodedToken as JwtPayload).role !== Role.USER ) {
-//                 throw new AppError(403, "you are not permited to see all user")
-//             }
-//             // console.log(" in user route", decodedToken)
-//             req.user = decodedToken;
-//             next();
-//         } catch (error) {
-//             console.log(error)
-//             next(error);
-//         }
-//     }
-// }

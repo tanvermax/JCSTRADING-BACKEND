@@ -5,7 +5,7 @@ const catchAsync = (fn) => (req, res, next) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Promise.resolve(fn(req, res, next)).catch((err) => {
         console.log(err);
-        next();
+        next(err);
     });
 };
 exports.catchAsync = catchAsync;

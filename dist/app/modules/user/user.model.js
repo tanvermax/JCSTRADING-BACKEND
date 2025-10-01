@@ -20,7 +20,7 @@ const useSchema = new mongoose_1.Schema({
         enum: Object.values(user_interface_1.Role)
     },
     phone: { type: Number },
-    picture: { type: String },
+    picture: { type: String, default: null },
     address: { type: String },
     isDeleted: { type: Boolean, default: false },
     isActive: {

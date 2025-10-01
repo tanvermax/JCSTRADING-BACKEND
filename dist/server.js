@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
 const env_1 = require("./app/config/env");
+const redis_config_1 = require("./app/config/redis.config");
 let server;
 const startserver = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -28,7 +29,11 @@ const startserver = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 });
-startserver();
+// startserver();
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, redis_config_1.connectRedis)();
+    yield startserver();
+}))();
 process.on("unhandledRejection", (err) => {
     console.log("Unhandle Rejection  Detected.. Server shutting down", err);
     if (server) {

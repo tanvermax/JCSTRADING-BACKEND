@@ -31,6 +31,7 @@ const user_model_1 = require("../user/user.model");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt_1 = require("../../utils/jwt");
 const env_1 = require("../../config/env");
+const user_token_1 = require("../../utils/user.token");
 const credentialsLogin = (payoad) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payoad;
     const IsUserExit = yield user_model_1.User.findOne({ email });
@@ -49,12 +50,18 @@ const credentialsLogin = (payoad) => __awaiter(void 0, void 0, void 0, function*
         role: IsUserExit.role,
         userId: IsUserExit._id
     };
-    const accesToken = (0, jwt_1.generateTOken)(jwtPayload, env_1.envVarse.JWT_ACCES_SECRET, env_1.envVarse.JWT_ACCES_EXPIRE);
+    const accesToken = (0, jwt_1.generateToken)(jwtPayload, env_1.envVarse.JWT_ACCES_SECRET, env_1.envVarse.JWT_ACCES_EXPIRE);
     const { password: pass } = IsUserExit, rest = __rest(IsUserExit, ["password"]);
     return {
         accesToken
     };
 });
+const getNewAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const newAccessToken = yield (0, user_token_1.createNewAccessTokenWithrefreshtoken)(refreshToken);
+    return {
+        accessToken: newAccessToken
+    };
+});
 exports.AuthService = {
-    credentialsLogin
+    credentialsLogin, getNewAccessToken
 };

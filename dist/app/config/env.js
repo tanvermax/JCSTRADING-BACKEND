@@ -15,7 +15,21 @@ const loadEnvVariables = () => {
         "BCRYPT_SALT_ROUNDE",
         "CLOUDINARY_CLOUD_NAME",
         "CLOUDINARY_API_KEY",
-        "CLOUDINARY_API_SECRET"
+        "CLOUDINARY_API_SECRET",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "EXPRESS_SESSION_SECRECT",
+        "GOOGLE_CALL_BACK_URL",
+        "FRONT_END_URL",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_USERNAME",
+        "REDIS_PASSWORD",
+        "SMTP_PASS",
+        "SMTP_PORT",
+        "SMTP_HOST",
+        "SMTP_USER",
+        "SMTP_FORM",
     ];
     requiredEnvVariable.forEach(key => {
         if (!process.env[key]) {
@@ -34,6 +48,22 @@ const loadEnvVariables = () => {
             CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
             CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
             CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+        },
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+        EXPRESS_SESSION_SECRECT: process.env.EXPRESS_SESSION_SECRECT,
+        GOOGLE_CALL_BACK_URL: process.env.GOOGLE_CALL_BACK_URL,
+        FRONT_END_URL: process.env.FRONT_END_URL,
+        REDIS_HOST: process.env.REDIS_HOST,
+        REDIS_PORT: process.env.REDIS_PORT,
+        REDIS_USERNAME: process.env.REDIS_USERNAME,
+        REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+        EMAIL_SENDER: {
+            SMTP_PASS: process.env.SMTP_PASS,
+            SMTP_PORT: process.env.SMTP_PORT,
+            SMTP_HOST: process.env.SMTP_HOST,
+            SMTP_USER: process.env.SMTP_USER,
+            SMTP_FORM: process.env.SMTP_FORM,
         }
     };
 };

@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = exports.generateTOken = void 0;
+exports.verifyToken = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const generateTOken = (Payload, secret, expiresIn) => {
+const generateToken = (Payload, secret, expiresIn) => {
     const token = jsonwebtoken_1.default.sign(Payload, secret, {
         expiresIn
     });
     return token;
 };
-exports.generateTOken = generateTOken;
+exports.generateToken = generateToken;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const verifyToken = (token, secret) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -23,8 +23,8 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const cloudinary_config_1 = require("../config/cloudinary.config");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const globalErrorHandler = (err, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
     console.log({ file: req.files });
+    console.error(`Error on: ${req.method} ${req.originalUrl}`);
     if (req.file) {
         yield (0, cloudinary_config_1.deleteImageForCloudinary)(req.file.path);
     }
@@ -42,30 +42,33 @@ const globalErrorHandler = (err, req, res, next) => __awaiter(void 0, void 0, vo
         const simplifiedError = (0, handleDuplicateError_1.handleDuplicateError)(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = (_a = simplifiedError.errorSources) !== null && _a !== void 0 ? _a : [];
+        errorSources = simplifiedError.errorSources;
     }
     else if (err.name === "CastError") {
         const simplifiedError = (0, handleCastError_1.handleCastError)(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = (_b = simplifiedError.errorSources) !== null && _b !== void 0 ? _b : [];
+        errorSources = simplifiedError.errorSources;
     }
     else if (err.name === "ValidationError") {
         const simplifiedError = (0, handleValidationError_1.handleValidationerror)(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = (_c = simplifiedError.errorSources) !== null && _c !== void 0 ? _c : [];
+        errorSources = simplifiedError.errorSources;
     }
     else if (err.name === "ZodError") {
         const simplifiedError = (0, zodValidation_1.Zodvalidation)(err);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
-        errorSources = (_d = simplifiedError.errorSources) !== null && _d !== void 0 ? _d : [];
+        errorSources = simplifiedError.errorSources;
     }
     else if (err instanceof AppError_1.default) {
+        // 💡 এই ব্লকটি আপনার 401 ত্রুটিটিকে ধরা উচিত
         statusCode = err.statusCode;
         message = err.message;
         errorSources = [{ path: "", message: err.message }];
+        // 💡 DEBUGGING: এখানে লগ যোগ করুন
+        console.log(`Global Handler Caught AppError: Status ${statusCode}, Message: ${message}`);
     }
     else if (err instanceof Error) {
         statusCode = http_status_codes_1.default.INTERNAL_SERVER_ERROR;

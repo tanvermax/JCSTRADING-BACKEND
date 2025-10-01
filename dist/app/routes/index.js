@@ -8,6 +8,7 @@ const transaction_route_1 = require("../modules/transaction/transaction.route");
 const agent_route_1 = require("../modules/agent/agent.route");
 const admin_routs_1 = require("../modules/admin/admin.routs");
 const product_route_1 = require("../modules/product/product.route");
+const otp_routs_1 = require("../modules/otp/otp.routs");
 exports.router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -33,6 +34,10 @@ const moduleRoutes = [
     {
         path: "/product",
         route: product_route_1.ProductRoute
+    },
+    {
+        path: "/otp",
+        route: otp_routs_1.OtpRouter
     }
 ];
 moduleRoutes.forEach((route) => {

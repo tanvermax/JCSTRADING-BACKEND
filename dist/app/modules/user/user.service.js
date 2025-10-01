@@ -28,44 +28,31 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const user_model_1 = require("./user.model");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const AppError_1 = __importDefault(require("../../errorHelper/AppError"));
-const wallet_model_1 = require("../waller/wallet.model");
-const mongoose_1 = __importDefault(require("mongoose"));
-// import { Transaction } from '../transaction/transaction.model';
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const session = yield mongoose_1.default.startSession();
-    session.startTransaction();
     try {
         const { email, password } = payload, rest = __rest(payload, ["email", "password"]);
-        const hashpassword = yield bcryptjs_1.default.hash(password, 10);
+        console.log("USER :", payload);
         const isUserExit = yield user_model_1.User.findOne({ email });
         if (isUserExit) {
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User alredy exit in");
         }
+        const hashpassword = yield bcryptjs_1.default.hash(password, 10);
         const authprovider = { provider: "creadentials", providerId: email };
         const user = yield user_model_1.User.create([
-            Object.assign({ email, password: hashpassword, auth: [authprovider] }, rest)
-        ], { session });
-        // console.log(user)
-        const ownerInfo = {
-            _id: user[0]._id,
-            name: user[0].name,
-            email: user[0].email,
-            role: user[0].role
-        };
-        yield wallet_model_1.Wallet.create([
-            {
-                owner: ownerInfo,
-                balance: 50
-            }
-        ], { session });
-        yield session.commitTransaction();
-        session.endSession();
-        return user[0];
+            Object.assign({ email, password: hashpassword, auths: [authprovider] }, rest)
+        ]);
+        return user;
     }
     catch (error) {
         console.log(error);
     }
 });
+const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId).select("-password");
+    return {
+        data: user
+    };
+});
 exports.userService = {
-    createUser
+    createUser, getMe
 };
